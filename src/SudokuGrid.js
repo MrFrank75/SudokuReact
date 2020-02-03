@@ -10,7 +10,7 @@ class SudokuGrid extends React.Component{
     render() {
         // const profile = this.props;
         return (
-            <div>
+            <div className="SudokuGrid">
                 <div>
                     <div className="ninebyninegrid">{this.state.numbers[0]} </div>
                     <div className="ninebyninegrid">{this.state.numbers[1]} </div>

@@ -1,16 +1,7 @@
 import React from 'react';
-import SudokuGrid from './SudokuGrid';
+import SudokuGridContainer from './SudokuGridContainer';
 
 import './App.css';
-
-// import Card from './Card';
-// import GitHubForm from './GitHubForm';
-
-// const CardList = (props) => (
-// <div>
-//   {props.profiles.map(profile => <Card {...profile}/>)}
-// </div>
-// )
 
 class App extends React.Component{
   
@@ -37,9 +28,7 @@ class App extends React.Component{
      return (
       <div className="App-header">
         {this.props.title}
-        <SudokuGrid />
-        {/* <GitHubForm profileHandler={this.addNewProfile} repoListHandler={this.addRepoList}/>
-        <CardList profiles={this.state.profiles} /> */}
+        <SudokuGridContainer />
       </div>
      );
   }
