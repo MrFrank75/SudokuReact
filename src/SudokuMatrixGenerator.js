@@ -2,13 +2,18 @@ import React from 'react';
 
 class SudokuMatrixGenerator extends React.Component{
 
+    FromGridToSquareArray(grid, intBlock)
+    {
+        return [3,4,5,6,7,8,9,10,11];
+    }
+
+
     generateMatrix9by9 = async (event) => {
         event.preventDefault();
 
         console.log("Entering 9by9 matrix generation")
         var grid = [];
-        var maxElementsToPrefill = 81;
-
+       
         //first row, we just fill up, no costraints
         var firstRow = getRowRandomNumbers();
         grid[0] = firstRow;
@@ -47,40 +52,16 @@ class SudokuMatrixGenerator extends React.Component{
                     idxNumToPlace++;
                 }
             }
-
-        }
         
-        this.props.matrixGenerationHandler([grid[0],[44,55,66],[77,88,98],4,5,6,7,8,99])
-    }
-
-
-
-    generateMatrix3by3 = async (event) => {
-        event.preventDefault();
-
-        var initialArray = [1,2,3,4,5,6,7,8,9];
-        var grid = [];
-        var maxElementsToPrefill = 9;
-
-        for (let index = 0; index < maxElementsToPrefill; index++) {
-            //pick an item contained in the array
-            var idxNextItemToPick = (Math.trunc(Math.random() * 10)) % initialArray.length;   
-            grid.push(initialArray[idxNextItemToPick]);
-            
-            //build a new smaller array
-            var newInitializationArray = [];
-            for (let index = 0; index < initialArray.length; index++) {
-                if (index!==idxNextItemToPick){
-                    newInitializationArray.push(initialArray[index]);
-                }
+            var squareArray = [];
+            for (let gridBlocks = 0; gridBlocks < 9; gridBlocks++) {
+                squareArray[gridBlocks] = this.FromGridToSquareArray(grid, gridBlocks)
             }
-            initialArray = newInitializationArray;
+                    
+            this.props.matrixGenerationHandler([squareArray[0],[44,55,66],[77,88,98],4,5,6,7,8,99])
         }
-        
-        console.log(grid);
-        this.props.matrixGenerationHandler([grid,[44,55,66],[77,88,98],4,5,6,7,8,99])
     }
-
+    
     render(){
         return (
             <div>
