@@ -11,11 +11,9 @@ class App extends React.Component{
   }
 
   generateInitialMatrix = (sudokuMatrix) =>{
-    console.log(this.state.repos);
     this.setState(prevState => ({
       initialSudokuMatrix : sudokuMatrix
     }))
-    
   }
 
   render(){
