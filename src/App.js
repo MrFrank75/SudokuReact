@@ -1,6 +1,7 @@
 import React from 'react';
-import './App.css';
 import SudokuGrid from './SudokuGrid';
+
+import './App.css';
 
 // import Card from './Card';
 // import GitHubForm from './GitHubForm';
