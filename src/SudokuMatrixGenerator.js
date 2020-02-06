@@ -2,26 +2,35 @@ import React from 'react';
 
 class SudokuMatrixGenerator extends React.Component{
 
-    FromGridToSquareArray(grid, intBlock)
+    ExtractTinyMatrix3by3fromBigListOfArray(listOfHorizontalVectors, idxSectorToConvert)
     {
-        return [3,4,5,6,7,8,9,10,11];
-    }
+        var sudokuBlock = [[],[],[]];
+       
+        for (let index = 0; index < listOfHorizontalVectors[idxSectorToConvert].length; index++) {
 
+            var idxColumn = index % 3;
+            var idxRow = Math.trunc(index / 3) 
+
+            sudokuBlock[idxRow][idxColumn] = listOfHorizontalVectors[idxSectorToConvert][index];
+        }
+
+        return sudokuBlock;
+    }
 
     generateMatrix9by9 = async (event) => {
         event.preventDefault();
 
         console.log("Entering 9by9 matrix generation")
-        var grid = [];
+        var listOfHorizontalVectors = [];
        
         //first row, we just fill up, no costraints
         var firstRow = getRowRandomNumbers();
-        grid[0] = firstRow;
+        listOfHorizontalVectors[0] = firstRow;
         
         //place all the rows
         for (let row = 1; row < 9; row++) {
             console.log("Placing row " + row);
-            grid[row] = [];
+            listOfHorizontalVectors[row] = [];
             var numbersToPlace = getRowRandomNumbers();
 
             //place all the columns
@@ -39,14 +48,14 @@ class SudokuMatrixGenerator extends React.Component{
                     //check every row in the same column until now
                     var idxPreviousRow = 0;
                     while ((!numberAlreadyPresent) && (idxPreviousRow < row)) {
-                        var elementToCheck = grid[idxPreviousRow][column];
+                        var elementToCheck = listOfHorizontalVectors[idxPreviousRow][column];
                         if (elementToCheck === numToPlace)
                             {numberAlreadyPresent = true;}
                         idxPreviousRow++;
                     }
                     
                     if (!numberAlreadyPresent){
-                        grid[row][column] = numToPlace;
+                        listOfHorizontalVectors[row][column] = numToPlace;
                         numHasBeenPlaced = true;
                     }
                     idxNumToPlace++;
@@ -54,11 +63,11 @@ class SudokuMatrixGenerator extends React.Component{
             }
         
             var squareArray = [];
-            for (let gridBlocks = 0; gridBlocks < 9; gridBlocks++) {
-                squareArray[gridBlocks] = this.FromGridToSquareArray(grid, gridBlocks)
+            for (let sudokuBlock = 0; sudokuBlock < 9; sudokuBlock++) {
+                squareArray[0] = this.ExtractTinyMatrix3by3fromBigListOfArray(listOfHorizontalVectors, 0)
             }
                     
-            this.props.matrixGenerationHandler([squareArray[0],[44,55,66],[77,88,98],4,5,6,7,8,99])
+            this.props.matrixGenerationHandler([squareArray[0],[0,0,0,0,0,0,0,0,0],[77,88,98],4,5,6,7,8,99])
         }
     }
     
