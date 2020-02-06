@@ -20,6 +20,43 @@ class SudokuMatrixGenerator extends React.Component{
         return sudokuBlock;
     }
 
+    PlaceColumn(arrayToPlace, listOfHorizontalVectors, columnToPlace, rowToPlace)
+    {
+        console.log("Placing column " + columnToPlace);
+        if (arrayToPlace.length===0)
+            return true;
+
+
+        for (var idxArrayToPlace=0; idxArrayToPlace< arrayToPlace.length; idxArrayToPlace++)
+        {
+            //for this column
+            //take the number to place from the array of remaining numbers
+            var numToPlace = arrayToPlace[idxArrayToPlace];
+            var numberAlreadyPresent = false;
+
+            //check every row in the same column until now
+            var idxPreviousRow = 0;
+            while ((!numberAlreadyPresent) && (idxPreviousRow < rowToPlace)) {
+                var elementToCheck = listOfHorizontalVectors[idxPreviousRow][columnToPlace];
+                if (elementToCheck === numToPlace)
+                    {numberAlreadyPresent = true;}
+                idxPreviousRow++;
+            }
+            
+            //place the number if wasn't there
+            if (!numberAlreadyPresent){
+                listOfHorizontalVectors[rowToPlace][columnToPlace] = numToPlace;
+                
+                // make a new array smaller
+                arrayToPlace.splice(idxArrayToPlace,1);
+                //place the remaining numbers
+                return this.PlaceColumn(arrayToPlace, listOfHorizontalVectors, columnToPlace+1, rowToPlace);
+            }
+            idxArrayToPlace++;
+        }
+        return false;
+    }
+
     generateMatrix9by9 = async (event) => {
         event.preventDefault();
 
@@ -36,34 +73,37 @@ class SudokuMatrixGenerator extends React.Component{
             listOfHorizontalVectors[row] = [];
             var numbersToPlace = getRowRandomNumbers();
 
-            //place all the columns
-            for (let column = 0; column < 9; column++) {
-                console.log("Placing column " + column);
+            this.PlaceColumn(numbersToPlace,listOfHorizontalVectors, 0, row);
+
+            // //place all the columns
+            // for (let column = 0; column < 9; column++) {
+            //     console.log("Placing column " + column);
             
-                //for each column
-                //scan the numbers to place
-                var numHasBeenPlaced = false;
-                var idxNumToPlace = 0;
-                while (!numHasBeenPlaced && idxNumToPlace <9) {
-                    var numToPlace = numbersToPlace[idxNumToPlace];
-                    var numberAlreadyPresent = false;
+            //     //for each column
+            //     //scan the numbers to place
+            //     var numHasBeenPlaced = false;
+            //     var idxNumToPlace = 0;
+            //     while (!numHasBeenPlaced && idxNumToPlace <9) {
+            //         var numToPlace = numbersToPlace[idxNumToPlace];
+            //         var numberAlreadyPresent = false;
     
-                    //check every row in the same column until now
-                    var idxPreviousRow = 0;
-                    while ((!numberAlreadyPresent) && (idxPreviousRow < row)) {
-                        var elementToCheck = listOfHorizontalVectors[idxPreviousRow][column];
-                        if (elementToCheck === numToPlace)
-                            {numberAlreadyPresent = true;}
-                        idxPreviousRow++;
-                    }
+            //         //check every row in the same column until now
+            //         var idxPreviousRow = 0;
+            //         while ((!numberAlreadyPresent) && (idxPreviousRow < row)) {
+            //             var elementToCheck = listOfHorizontalVectors[idxPreviousRow][column];
+            //             if (elementToCheck === numToPlace)
+            //                 {numberAlreadyPresent = true;}
+            //             idxPreviousRow++;
+            //         }
                     
-                    if (!numberAlreadyPresent){
-                        listOfHorizontalVectors[row][column] = numToPlace;
-                        numHasBeenPlaced = true;
-                    }
-                    idxNumToPlace++;
-                }
-            }
+            //         //place the number if wasn't there
+            //         if (!numberAlreadyPresent){
+            //             listOfHorizontalVectors[row][column] = numToPlace;
+            //             numHasBeenPlaced = true;
+            //         }
+            //         idxNumToPlace++;
+            //     }
+            // }
         }
 
         var squareArray = [];
