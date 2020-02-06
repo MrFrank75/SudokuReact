@@ -4,14 +4,17 @@ class SudokuMatrixGenerator extends React.Component{
 
     ExtractTinyMatrix3by3fromBigListOfArray(listOfHorizontalVectors, idxSectorToConvert)
     {
-        var sudokuBlock = [[],[],[]];
+        var sudokuBlock = [];
        
         for (let index = 0; index < listOfHorizontalVectors[idxSectorToConvert].length; index++) {
 
-            var idxColumn = index % 3;
-            var idxRow = Math.trunc(index / 3) 
+            var idxStartColumn = (idxSectorToConvert*3) % 9;
+            var idxColumn = (index % 3) + idxStartColumn;
+            
+            var idxStartRow = Math.trunc(idxSectorToConvert / 3) *3;
+            var idxRow = Math.trunc(index / 3)  + idxStartRow;
 
-            sudokuBlock[idxRow][idxColumn] = listOfHorizontalVectors[idxSectorToConvert][index];
+            sudokuBlock[index] = listOfHorizontalVectors[idxRow][idxColumn];
         }
 
         return sudokuBlock;
@@ -61,14 +64,20 @@ class SudokuMatrixGenerator extends React.Component{
                     idxNumToPlace++;
                 }
             }
-        
-            var squareArray = [];
-            for (let sudokuBlock = 0; sudokuBlock < 9; sudokuBlock++) {
-                squareArray[0] = this.ExtractTinyMatrix3by3fromBigListOfArray(listOfHorizontalVectors, 0)
-            }
-                    
-            this.props.matrixGenerationHandler([squareArray[0],[0,0,0,0,0,0,0,0,0],[77,88,98],4,5,6,7,8,99])
         }
+
+        var squareArray = [];
+        for (let sudokuBlock = 0; sudokuBlock < 9; sudokuBlock++) {
+            squareArray[sudokuBlock] = this.ExtractTinyMatrix3by3fromBigListOfArray(listOfHorizontalVectors, sudokuBlock)
+        }
+                
+        this.props.matrixGenerationHandler([squareArray[0],squareArray[1],squareArray[2],squareArray[3],
+            squareArray[4],
+            squareArray[5],
+            squareArray[6],
+            squareArray[7],
+            squareArray[8]]);
+    
     }
     
     render(){

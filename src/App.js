@@ -7,7 +7,17 @@ import './App.css';
 class App extends React.Component{
   
   state = {
-    initialSudokuMatrix : []
+    initialSudokuMatrix : [
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0]
+    ]
   }
 
   generateInitialMatrix = (sudokuMatrix) =>{
