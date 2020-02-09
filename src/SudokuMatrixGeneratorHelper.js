@@ -30,8 +30,37 @@ export const removeElementFromArray = (arrayToReduce, idxToRemove) =>{
     return smallerArray;
 }
 
+export const ExtractSectorFromMatrix = (gridOfNumbers, idxSectorToConvert) => {
+        var sudokuBlock = [];
+        var sizeOfGrid = 9;
+
+        var idxStartRow = Math.trunc(idxSectorToConvert / 3) *3;
+        var idxStartColumn = (idxSectorToConvert%3) *3;
+        
+        for (let index = 0; index < sizeOfGrid; index++) {
+            var idxRow = Math.trunc(index / 3)  + idxStartRow;
+            var idxColumn = (index % 3) + idxStartColumn; 
+            sudokuBlock[index] = 0;
+
+            if ((gridOfNumbers.length>idxRow)){
+                if (gridOfNumbers[idxRow].length > idxColumn) {
+                    sudokuBlock[index] = gridOfNumbers[idxRow][idxColumn];
+                }
+            }
+        }
+        return sudokuBlock;
+}
+
+function GetSectorZeroBasedFromPlacingRowCol(placingRow, placingCol)
+{
+    var sectRowTemp = Math.trunc(placingRow / 3) * 3; //can be 0, 3,6
+    var sectColTemp = Math.trunc(placingCol / 3); // can be 0,1,2
+    return (sectRowTemp + sectColTemp);
+}
+
 export const IsSafeToPlace = (gridToCheck,placingRow, placingCol, numToPlace) => {
-    var isSafeToPlace = true;            
+    var isSafeToPlace = true; 
+
     //check every row in the same column until now
     var idxPreviousRow = 0;
     while ((isSafeToPlace) && (idxPreviousRow < placingRow)) {
@@ -39,6 +68,22 @@ export const IsSafeToPlace = (gridToCheck,placingRow, placingCol, numToPlace) =>
         if (elementToCheck === numToPlace)
             {isSafeToPlace = false;}
         idxPreviousRow++;
-    }         
+    }
+    
+    //check the block related to the row/col we are placing
+    if (isSafeToPlace===true)
+    {
+        var sectorToCheck = GetSectorZeroBasedFromPlacingRowCol(placingRow, placingCol) 
+        var sectorMatrix = ExtractSectorFromMatrix(gridToCheck , sectorToCheck); 
+    
+        for (let index = 0; index < sectorMatrix.length; index++) {
+            if (sectorMatrix[index] === numToPlace)
+            {
+                isSafeToPlace = false;
+                break;
+            }
+        }
+    }
+
     return isSafeToPlace;
 }
