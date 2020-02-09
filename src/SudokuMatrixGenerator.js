@@ -1,4 +1,8 @@
 import React from 'react';
+import {getRowRandomNumbers} from './SudokuMatrixGeneratorHelper'
+import {removeElementFromArray} from './SudokuMatrixGeneratorHelper'
+import {IsSafeToPlace} from './SudokuMatrixGeneratorHelper'
+
 
 class SudokuMatrixGenerator extends React.Component{
 
@@ -20,60 +24,35 @@ class SudokuMatrixGenerator extends React.Component{
         return sudokuBlock;
     }
 
-    PlaceRowAndColumn(arrayToPlace, listOfHorizontalVectors, columnToPlace, rowToPlace, rowsToGenerate)
+    PlaceRowAndColumn(numbersToPlaceForCurrentRow, grid, columnToPlace, rowToPlace, rowsToGenerate)
     {
-            
-        if (arrayToPlace.length===0){
+        //check if we need to create a new row
+        if (numbersToPlaceForCurrentRow.length===0){
             if (rowToPlace < rowsToGenerate-1)
             {
                 console.log("Placing row " + (rowToPlace+1));
                 var nextArrayToPlace = getRowRandomNumbers();
-                listOfHorizontalVectors[rowToPlace+1] = [];
-                return this.PlaceRowAndColumn(nextArrayToPlace, listOfHorizontalVectors,0, rowToPlace+1, rowsToGenerate);
+                grid[rowToPlace+1] = [];
+                return this.PlaceRowAndColumn(nextArrayToPlace, grid,0, rowToPlace+1, rowsToGenerate);
             }
             return true;
         } 
        
-       
+        //check among the numbers to place one that is Safe to place. Place it and move to the next recursively
         var nextNumberIsPlaced = false;
-        for (var idxArrayToPlace=0; idxArrayToPlace< arrayToPlace.length; idxArrayToPlace++)
+        for (var idxNumberToPlace=0; idxNumberToPlace< numbersToPlaceForCurrentRow.length; idxNumberToPlace++)
         {
-            //for this column
-            //take the number to place from the array of remaining numbers
-            var numToPlace = arrayToPlace[idxArrayToPlace];
-            var numberAlreadyPresent = false;
-            
-            //check every row in the same column until now
-            var idxPreviousRow = 0;
-            while ((!numberAlreadyPresent) && (idxPreviousRow < rowToPlace)) {
-                var elementToCheck = listOfHorizontalVectors[idxPreviousRow][columnToPlace];
-                if (elementToCheck === numToPlace)
-                    {numberAlreadyPresent = true;}
-                idxPreviousRow++;
-            }
-            
-            //place the number if checks are successful
-            if (!numberAlreadyPresent){
-                listOfHorizontalVectors[rowToPlace][columnToPlace] = numToPlace;
-                
-                // make a new array smaller
-                var smallerArray = [];
-                var idxSmallerArray = 0;
-                for (let index = 0; index < arrayToPlace.length; index++) {
-                    if (index!==idxArrayToPlace){
-                        smallerArray[idxSmallerArray] = arrayToPlace[index];
-                        idxSmallerArray++;
-                    }
-                }
-
-                //place the remaining numbers
-                nextNumberIsPlaced = this.PlaceRowAndColumn(smallerArray, listOfHorizontalVectors, columnToPlace+1, rowToPlace, rowsToGenerate);
+            var numAttemptingToPlace = numbersToPlaceForCurrentRow[idxNumberToPlace];
+            if (IsSafeToPlace(grid,rowToPlace,columnToPlace, numAttemptingToPlace)){
+                grid[rowToPlace][columnToPlace] = numAttemptingToPlace;
+                var remainingNumbers = removeElementFromArray(numbersToPlaceForCurrentRow, idxNumberToPlace);
+                nextNumberIsPlaced = this.PlaceRowAndColumn(remainingNumbers, grid, columnToPlace+1, rowToPlace, rowsToGenerate);
             }
 
             //if the next placements didn't work out with the number we took, let's try another number
             if(nextNumberIsPlaced === true)
                 break;
-            idxArrayToPlace++;
+            idxNumberToPlace++;
         }
 
         return nextNumberIsPlaced;
@@ -87,7 +66,7 @@ class SudokuMatrixGenerator extends React.Component{
      
         //place all the rows and columns
         const rowsToGenerate = 9;
-        var placedEverything = this.PlaceRowAndColumn([],listOfHorizontalVectors, 0, -1, rowsToGenerate);
+        this.PlaceRowAndColumn([],listOfHorizontalVectors, 0, -1, rowsToGenerate);
 
         var squareArray = [];
         for (let sudokuBlock = 0; sudokuBlock < rowsToGenerate; sudokuBlock++) {
@@ -119,22 +98,4 @@ class SudokuMatrixGenerator extends React.Component{
 
 export default SudokuMatrixGenerator
 
-function getRowRandomNumbers() {
-    var initialArray = [1,2,3,4,5,6,7,8,9];        
-    var randomNumbersRow = [];
 
-    for (let index = 0; index < 9; index++) {
-        //pick an item contained in the array
-        var idxNextItemToPick = (Math.trunc(Math.random() * 10)) % initialArray.length;
-        randomNumbersRow.push(initialArray[idxNextItemToPick]);
-        //build a new smaller array
-        var newInitializationArray = [];
-        for (let index = 0; index < initialArray.length; index++) {
-            if (index !== idxNextItemToPick) {
-                newInitializationArray.push(initialArray[index]);
-            }
-        }
-        initialArray = newInitializationArray;
-    }
-    return randomNumbersRow;
-}
